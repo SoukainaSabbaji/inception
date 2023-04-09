@@ -6,3 +6,6 @@ if ! command -v wp &> /dev/null; then
   chmod +x /usr/local/bin/wp
 fi
 
+wp core download --path=/var/www/html --allow-root
+wp config create --dbname=testing --dbuser=nekoarc --dbpass=nekoarcnya --dbhost=localhost --path=/var/www/html --allow-root
+bash
