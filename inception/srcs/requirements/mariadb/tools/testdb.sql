@@ -1,4 +1,6 @@
 CREATE DATABASE my_database;
 CREATE USER IF NOT EXISTS 'myuser'@'localhost' IDENTIFIED BY '1111';
-GRANT ALL PRIVILEGES ON my_database.* TO 'my_user'@'%' IDENTIFIED BY 'my_password';
+GRANT ALL PRIVILEGES ON my_database.* TO 'my_user'@'%' IDENTIFIED BY '1111';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '1111';
 FLUSH PRIVILEGES;
+
