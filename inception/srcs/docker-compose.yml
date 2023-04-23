@@ -20,7 +20,7 @@ services:
     container_name: mariadb
     build: ./requirements/mariadb
     ports:
-      - "3306:3306"
+      - "3306"
     env_file:
       - .env
     volumes:
@@ -33,7 +33,7 @@ services:
     container_name: wordpress
     build: ./requirements/wordpress
     ports:
-      - "80:80"
+      - "80"
     env_file:
       - .env
     volumes:
@@ -43,3 +43,21 @@ services:
     networks:
       - inception
     restart: always
+
+volumes:
+  wp-content:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/soukaina/wordpress/wp-content
+  db-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/soukaina/wordpress/db-data
+
+networks:
+  inception:
+    driver: bridge

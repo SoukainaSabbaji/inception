@@ -7,7 +7,7 @@ if ! command -v wp &> /dev/null; then
   chmod +x /usr/local/bin/wp
 fi
 
-sed -i 's/^listen = .*/listen = 9000/g' /etc/php/7.3/fpm/pool.d/www.conf
+sed -i -e 's/^listen = .*/listen = 9000/g' /etc/php/7.3/fpm/pool.d/www.conf
 
 wp core download --path=/var/www/html --allow-root
 wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$WP_HOST" --path=/var/www/html --allow-root --skip-check --extra-php <<PHP
