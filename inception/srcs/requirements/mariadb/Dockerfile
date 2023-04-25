@@ -1,16 +1,9 @@
-FROM alpine:latest
-
-ARG DB_NAME
-ARG DB_USER
-ARG DB_PASS
-ARG DB_ROOT_PASS
+FROM alpine:3.15
 
 RUN apk update && apk upgrade &&\
     apk add mariadb mariadb-client procps && \
     rm -rf /var/cache/apk/*
 
-RUN sed -i 's/bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY tools/testdb.sh /tmp/testdb.sh
 
-COPY database.sql /docker-entrypoint-initdb.d/
-
-CMD ["mysqld_safe"]
+ENTRYPOINT [ "sh", "/tmp/testdb.sh" ]
