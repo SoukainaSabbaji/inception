@@ -19,24 +19,30 @@ if [ ! -d /var/lib/mysql/mysql ]; then
 		echo "Error: Failed to initialize MariaDB data directory"
 		exit 1
 	fi
+	tfile=`mktemp`
+	if [ ! -f "$tfile" ]; then
+		return 1
+	fi
 
-	sql=$(cat <<EOF
+	cat << EOF > $tfile
 USE mysql;
 FLUSH PRIVILEGES;
+DELETE FROM	mysql.user WHERE User='';
 DROP DATABASE test;
 DELETE FROM mysql.db WHERE Db='test';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASS';
-CREATE DATABASE IF NOT EXISTS '$DB_NAME';
+CREATE DATABASE wordpress;
 CREATE USER '$DB_USER'@'%' IDENTIFIED by '$DB_PASS';
-GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%';
+GRANT ALL PRIVILEGES ON wordpress.* TO '$DB_USER'@'%';
 FLUSH PRIVILEGES;
 EOF
-)
-
-	echo "$sql" | /usr/bin/mysqld --user=mysql --bootstrap
+	/usr/bin/mysqld --user=mysql --bootstrap < $tfile
+	rm -f $tfile
 fi
 
 sed -i "s|skip-networking|# skip-networking|g" "$MYCNF"
 sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" "$MYCNF"
 /usr/bin/mysqld --user=mysql --console
+
+
